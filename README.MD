@@ -2,9 +2,7 @@
 # CTTO: MaxRohowsky
 
 
-![Preview](/preview.png)
-<br>
-<br>
+
 
 **Chrome Dinosaur Game** in **Python** using **Pygame**! 🦖
 
