@@ -1,4 +1,6 @@
 # Chrome Dino Game
+# CTTO: MaxRohowsky
+
 
 ![Preview](/preview.png)
 <br>
