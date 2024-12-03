@@ -4,6 +4,7 @@ import os
 import random
 import cv2
 import pyautogui
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # Initialize Pygame
 pygame.init()
@@ -11,9 +12,11 @@ pygame.init()
 # Global Constants
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
+
+
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-RUNNING = [pygame.image.load(os.path.join("Assets/Dino", "DinoRun1.png")),
+RUNNING = [pygame.image.load(os.path.join("Assets/Dino", "d.png")),
            pygame.image.load(os.path.join("Assets/Dino", "DinoRun2.png"))]
 JUMPING = pygame.image.load(os.path.join("Assets/Dino", "DinoJump.png"))
 DUCKING = [pygame.image.load(os.path.join("Assets/Dino", "DinoDuck1.png")),
