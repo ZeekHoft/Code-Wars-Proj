@@ -3,37 +3,46 @@ import pygame
 import os
 import random
 import cv2
+
+from pygame import mixer 
 import pyautogui
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+
 # Initialize Pygame
 pygame.init()
+mixer.init()
+
 
 # Global Constants
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
-
-
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-RUNNING = [pygame.image.load(os.path.join("Assets/Dino", "d.png")),
-           pygame.image.load(os.path.join("Assets/Dino", "DinoRun2.png"))]
-JUMPING = pygame.image.load(os.path.join("Assets/Dino", "DinoJump.png"))
-DUCKING = [pygame.image.load(os.path.join("Assets/Dino", "DinoDuck1.png")),
-           pygame.image.load(os.path.join("Assets/Dino", "DinoDuck2.png"))]
 
-SMALL_CACTUS = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus1.png")),
-                pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus2.png")),
-                pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus3.png"))]
-LARGE_CACTUS = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus1.png")),
-                pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus2.png")),
-                pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus3.png"))]
 
-BIRD = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
-        pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
+RUNNING = [pygame.image.load(os.path.join("Assets/Dino", "planerun.png")),
+           pygame.image.load(os.path.join("Assets/Dino", "planerun1.png"))]
+JUMPING = pygame.image.load(os.path.join("Assets/Dino", "planejump.png"))
+DUCKING = [pygame.image.load(os.path.join("Assets/Dino", "planeduck1.png")),
+           pygame.image.load(os.path.join("Assets/Dino", "planeduck2.png"))]
 
-CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
-BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
+SMALL_CACTUS = [pygame.image.load(os.path.join("Assets/Cactus", "smallalien1.png")),
+                pygame.image.load(os.path.join("Assets/Cactus", "smallalien2.png")),
+                pygame.image.load(os.path.join("Assets/Cactus", "smallalien3.png"))]
+
+LARGE_CACTUS = [pygame.image.load(os.path.join("Assets/Cactus", "largealien1.png")),
+                pygame.image.load(os.path.join("Assets/Cactus", "largealien2.png")),
+                pygame.image.load(os.path.join("Assets/Cactus", "largealien3.png"))]
+
+BIRD = [pygame.image.load(os.path.join("Assets/Bird", "meteor1.png")),
+        pygame.image.load(os.path.join("Assets/Bird", "meteor2.png"))]
+
+CLOUD = pygame.image.load(os.path.join("Assets/Other", "PLanet.png"))
+
+BG = pygame.image.load(os.path.join("Assets/Other", "download.png"))
+BGMUSIC = mixer.music.load(os.path.join("Assets/Sound", "bgmusic.mp3"))
+
 
 # Variables for game and OpenCV control
 game_speed = 20
@@ -92,7 +101,7 @@ class Dinosaur:
         self.dino_duck = False
         self.dino_run = True
         self.dino_jump = False
-
+        
         self.step_index = 0
         self.jump_vel = self.JUMP_VEL
         self.image = self.run_img[0]
@@ -203,7 +212,7 @@ class Bird(Obstacle):
     def __init__(self, image):
         self.type = 0
         super().__init__(image, self.type)
-        self.rect.y = 250
+        self.rect.y = 200
         self.index = 0
 
     def draw(self, SCREEN):
@@ -223,7 +232,7 @@ def main():
     obstacles = []
     game_speed = 20
     x_pos_bg = 0
-    y_pos_bg = 380
+    y_pos_bg = 0
     points = 0
 
 
@@ -244,8 +253,8 @@ def main():
         if points % 100 == 0:
             game_speed += 1
         font = pygame.font.Font('freesansbold.ttf', 20)
-        text = font.render("Points: " + str(points), True, (0, 0, 0))
-        SCREEN.blit(text, (900, 40))
+        text = font.render("Light Years Travelled: " + str(points), True, (255, 255, 255))
+        SCREEN.blit(text, (800, 40))
 
 
     def obstacles_manager():
@@ -277,14 +286,15 @@ def main():
                 run = False
 
         SCREEN.fill((255, 255, 255))
-        player.draw(SCREEN)
-        player.update()
         background()
 
-        cloud.draw(SCREEN)
+        player.draw(SCREEN)
+        player.update()
+      
+        # cloud.draw(SCREEN)
 
         obstacles_manager()
-        cloud.update()
+        # cloud.update()
         score()
         pygame.display.update()
         clock.tick(30)
@@ -292,6 +302,7 @@ def main():
 
 
 def menu():
+    mixer.music.play(loops=-1)
     global death_count, points
     run = True
     while run:
@@ -300,9 +311,15 @@ def menu():
 
         if death_count == 0:
             text = font.render("Press any key to Start", True, (0, 0, 0))
+        elif death_count > 0:
+            text = font.render("Press any Key to Restart", True, (0, 0, 0))
+            score = font.render("Your Score: " + str(points), True, (0, 0, 0))
+            scoreRect = score.get_rect()
+            scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
+            SCREEN.blit(score, scoreRect)
         else:
             text = font.render("Press any key to Restart", True, (0, 0, 0))
-            score_text = font.render(f"Your Score: {points}", True, (0, 0, 0))
+            score_text = font.render(f"Your Distance: {points}", True, (255, 255, 255))
 
             SCREEN.blit(score_text, (SCREEN_WIDTH // 2 - score_text.get_width() // 2, SCREEN_HEIGHT // 2 + 50))
 
